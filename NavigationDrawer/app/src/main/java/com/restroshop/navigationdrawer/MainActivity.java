@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -69,6 +70,7 @@ import android.widget.Toast;
  */
 public class MainActivity extends Activity {
     private DrawerLayout mDrawerLayout;
+    private LinearLayout mDrawer;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -84,7 +86,8 @@ public class MainActivity extends Activity {
         mTitle = mDrawerTitle = getTitle();
         mPlanetTitles = getResources().getStringArray(R.array.planets_array);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawer = (LinearLayout) findViewById(R.id.left_drawer);
+        mDrawerList = (ListView) (mDrawer.findViewById(R.id.list));
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
@@ -137,7 +140,7 @@ public class MainActivity extends Activity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawer);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -188,7 +191,7 @@ public class MainActivity extends Activity {
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(mPlanetTitles[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(mDrawer);
     }
 
     @Override
