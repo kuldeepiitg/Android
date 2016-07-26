@@ -94,8 +94,11 @@ public class MainActivity extends Activity {
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
-        getActionBar().setDisplayHomeAsUpEnabled(false); // Hide three horizontal lines
         getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true); // Hide Three horizontal lines
+        getActionBar().setDisplayUseLogoEnabled(false);
+        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setDisplayShowHomeEnabled(false);
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
