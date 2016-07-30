@@ -1,4 +1,4 @@
-package com.restroshop.countwidget;
+package com.restroshop.components;
 
 import android.annotation.TargetApi;
 import android.content.Context;
