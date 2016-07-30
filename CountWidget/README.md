@@ -1,7 +1,7 @@
 Counter Widget
 ==============
 
-The widget have two buttons, left to decrement the count and right to increment. And there is an edit text button
+The widget have two buttons, left to decrement the count and right to increment. And there is an edit text view
 which shows the count value.
 
 ![alt tag](countwidget.png)
