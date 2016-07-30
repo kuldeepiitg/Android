@@ -1,3 +1,15 @@
+Counter Widget
+==============
+
+The widget have two buttons, left to decrement the count and right to increment. And there is an edit text button
+which shows the count value.
+
+![alt tag](countwidget.png)
+
+
+
+
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -18,19 +30,7 @@
         custom:max="15"
         custom:min="5"
         android:paddingBottom="10dp" />
-
-
-    <com.restroshop.components.CountWidget
-        android:id="@+id/counter2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        custom:max="15"
-        custom:min="5"
-        android:paddingBottom="10dp" />
-
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </LinearLayout>
+```
+
+Attribute **max** and **min** are maximum and minimum value that the counter can take.
