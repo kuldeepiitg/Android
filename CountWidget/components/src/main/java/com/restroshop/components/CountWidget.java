@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,22 @@ public class CountWidget extends LinearLayout {
      * Count view holding the count
      */
     private EditText countView;
+
+    /**
+     * Plus/Minus buttons.
+     */
+    private ImageView minusButton;
+    private ImageView plusButton;
+
+    /**
+     * On plus/minus button click listener
+     */
+    private OnButtonClickListener onButtonClickListener;
+
+    /**
+     * On counter value change listener
+     */
+    private OnCountChangeListener onCountChangeListener;
 
     public CountWidget(Context context) {
         super(context);
@@ -72,11 +90,11 @@ public class CountWidget extends LinearLayout {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.count_widget, this, true);
 
-        LinearLayout container = (LinearLayout) getChildAt(0);
+        final LinearLayout container = (LinearLayout) getChildAt(0);
 
-        ImageView minusButton = (ImageView) container.getChildAt(0);
+        minusButton = (ImageView) container.getChildAt(0);
         countView = (EditText) container.getChildAt(1);
-        ImageView plusButton = (ImageView) container.getChildAt(2);
+        plusButton = (ImageView) container.getChildAt(2);
 
         countView.setText(Integer.toString(min));
         countView.setCursorVisible(false);
@@ -96,6 +114,10 @@ public class CountWidget extends LinearLayout {
                 }
                 if (count > min) count--;
                 countView.setText(Integer.toString(count));
+
+                if (onButtonClickListener != null) {
+                    onButtonClickListener.OnMinusButtonClick(count);
+                }
             }
         });
 
@@ -114,8 +136,71 @@ public class CountWidget extends LinearLayout {
                 }
                 if (count < max) count++;
                 countView.setText(Integer.toString(count));
+
+                if (onButtonClickListener != null) {
+                    onButtonClickListener.OnPlusButtonClick(count);
+                }
             }
         });
+
+        countView.addTextChangedListener(new TextWatcher() {
+
+            private int previousCount;
+            private int currentCount;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0 || !isNumber(String.valueOf(charSequence))) {
+                    previousCount = 0;
+                } else {
+                    previousCount = Integer.valueOf(String.valueOf(charSequence));
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.length() == 0 || !isNumber(String.valueOf(charSequence))) {
+                    currentCount = 0;
+                } else {
+                    currentCount = Integer.valueOf(String.valueOf(charSequence));
+                }
+                if (currentCount == previousCount) return;
+                if (onCountChangeListener != null) {
+                    onCountChangeListener.onCountChange(currentCount);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (!isNumber(String.valueOf(editable))) {
+                    countView.setText(String.valueOf(min));
+                    return;
+                }
+
+                int count = Integer.valueOf(String.valueOf(editable));
+                if (count > max) {
+                    countView.setText(String.valueOf(max));
+                } else if (count < min) {
+                    countView.setText(String.valueOf(min));
+                }
+            }
+        });
+    }
+
+    /**
+     * Check if string is a number.
+     *
+     * @param text expected number as a string
+     * @return true if the string is a number, false otherwise.
+     */
+    private boolean isNumber(String text) {
+        try {
+            Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -131,21 +216,21 @@ public class CountWidget extends LinearLayout {
     }
 
     /**
+     * Get maximum allowed value of counter.
+     *
+     * @return maximum allowed value of counter.
+     */
+    public int getMax() {
+        return this.max;
+    }
+
+    /**
      * Set max allowed value of counter.
      *
      * @param max maximum value of counter
      */
     public void setMax(int max) {
         this.max = max;
-    }
-
-    /**
-     * Get maximum allowed value of counter.
-     *
-     * @return maximum allowed value of counter.
-     */
-    public int getMax(){
-        return this.max;
     }
 
     /**
@@ -173,5 +258,49 @@ public class CountWidget extends LinearLayout {
      */
     public void setMin(int min) {
         this.min = min;
+    }
+
+    /**
+     * Set plus minus button click listener.
+     *
+     * @param onButtonClickListener listener
+     */
+    public void setOnButtonClickListener(OnButtonClickListener onButtonClickListener) {
+        this.onButtonClickListener = onButtonClickListener;
+    }
+
+    /**
+     * Set counter value change listener
+     *
+     * @param onCountChangeListener listener
+     */
+    public void setOnCountChangeListener(OnCountChangeListener onCountChangeListener) {
+        this.onCountChangeListener = onCountChangeListener;
+    }
+
+    /**
+     * On Buttons click listener
+     */
+    public interface OnButtonClickListener {
+        /**
+         * Do on plus button click.
+         */
+        void OnPlusButtonClick(int count);
+
+        /**
+         * Do on minus button click.
+         */
+        void OnMinusButtonClick(int count);
+    }
+
+    /**
+     * Listener to respond to counter value change
+     */
+    public interface OnCountChangeListener {
+
+        /**
+         * Do on count change.
+         */
+        void onCountChange(int count);
     }
 }
